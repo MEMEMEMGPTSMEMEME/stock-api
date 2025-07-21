@@ -1,24 +1,53 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.1.0",
   "info": {
     "title": "Stock Pattern Analysis API",
     "version": "1.0.0",
     "description": "API for surge pattern detection, similarity, lead-lag analysis, coupling, macro flow alignment, and sync matrix."
   },
+  "servers": [
+    {
+      "url": "https://stock-api-n6ja.onrender.com",
+      "description": "Production server"
+    }
+  ],
   "paths": {
     "/pattern/surge": {
       "get": {
         "summary": "Detect surge pattern",
         "parameters": [
-          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "source", "in": "query", "required": false, "schema": { "type": "string" } },
-          { "name": "interval", "in": "query", "required": false, "schema": { "type": "string" } }
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Surge pattern detected",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
@@ -28,14 +57,31 @@
       "get": {
         "summary": "Compare with past surge pattern",
         "parameters": [
-          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "top_n", "in": "query", "required": false, "schema": { "type": "integer", "default": 3 } }
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "top_n",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 3
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Similarity results",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
@@ -45,15 +91,39 @@
       "get": {
         "summary": "Lead-lag analysis between two symbols",
         "parameters": [
-          { "name": "symbol1", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "symbol2", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "days", "in": "query", "required": false, "schema": { "type": "integer", "default": 7 } }
+          {
+            "name": "symbol1",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "symbol2",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 7
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Lead-lag results",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
@@ -63,13 +133,22 @@
       "get": {
         "summary": "Coupling and divergence analysis",
         "parameters": [
-          { "name": "symbols", "in": "query", "required": true, "schema": { "type": "string" } }
+          {
+            "name": "symbols",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Coupling matrix result",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
@@ -83,7 +162,9 @@
           "200": {
             "description": "Macro flow alignment results",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
@@ -93,14 +174,31 @@
       "get": {
         "summary": "Compute multi-symbol rolling correlation matrix",
         "parameters": [
-          { "name": "symbols", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "window", "in": "query", "required": false, "schema": { "type": "integer", "default": 7 } }
+          {
+            "name": "symbols",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 7
+            }
+          }
         ],
         "responses": {
           "200": {
             "description": "Correlation sync matrix",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {}
+              }
             }
           }
         }
