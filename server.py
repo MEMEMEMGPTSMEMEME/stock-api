@@ -34,7 +34,12 @@ def get_price():
         return jsonify({"error": error}), 400
 
     latest = df.iloc[-1].to_dict()
-    return jsonify({"symbol": symbol, "source": source, "interval": interval, "latest": latest})
+    return jsonify({
+        "symbol": symbol,
+        "source": source,
+        "interval": interval,
+        "latest": latest
+    })
 
 @app.route("/avg", methods=["GET"])
 def get_avg_close():
@@ -48,7 +53,13 @@ def get_avg_close():
         return jsonify({"error": error}), 400
 
     avg = df.tail(days)["Close"].mean()
-    return jsonify({"symbol": symbol, "source": source, "interval": interval, "days": days, "average_close": round(avg, 3)})
+    return jsonify({
+        "symbol": symbol,
+        "source": source,
+        "interval": interval,
+        "days": days,
+        "average_close": round(avg, 3)
+    })
 
 @app.route("/similarity", methods=["GET"])
 def get_similarity():
@@ -64,7 +75,14 @@ def get_similarity():
 
     merged = pd.merge(df1, df2, on="Date", suffixes=("_base", "_target"))
     corr = merged["Close_base"].corr(merged["Close_target"])
-    return jsonify({"base": base, "target": target, "interval": interval, "source": source, "correlation": round(corr, 4), "days_compared": len(merged)})
+    return jsonify({
+        "base": base,
+        "target": target,
+        "interval": interval,
+        "source": source,
+        "correlation": round(corr, 4),
+        "days_compared": len(merged)
+    })
 
 @app.route("/pattern/surge", methods=["GET"])
 def surge_pattern():
@@ -80,7 +98,10 @@ def surge_pattern():
     df["Return"] = df["Close"].pct_change()
     df["Surge"] = df["Return"] > threshold
     surges = df[df["Surge"]].to_dict(orient="records")
-    return jsonify({"symbol": symbol, "surges": surges})
+    return jsonify({
+        "symbol": symbol,
+        "surges": surges
+    })
 
 @app.route("/pattern/surge/similarity", methods=["GET"])
 def surge_similarity():
@@ -98,7 +119,12 @@ def surge_similarity():
     df2["Surge"] = df2["Close"].pct_change() > 0.1
     merged = pd.merge(df1[["Date", "Surge"]], df2[["Date", "Surge"]], on="Date", suffixes=("_base", "_target"))
     similarity = (merged["Surge_base"] == merged["Surge_target"]).mean()
-    return jsonify({"base": base, "target": target, "similarity": round(similarity, 4), "days": len(merged)})
+    return jsonify({
+        "base": base,
+        "target": target,
+        "similarity": round(similarity, 4),
+        "days": len(merged)
+    })
 
 @app.route("/leadlag", methods=["GET"])
 def lead_lag():
@@ -116,7 +142,12 @@ def lead_lag():
     merged = pd.merge(df1[["Date", "Close"]], df2[["Date", "Close"]], on="Date", suffixes=("_base", "_target"))
     merged["Close_base_shifted"] = merged["Close_base"].shift(lag)
     corr = merged["Close_base_shifted"].corr(merged["Close_target"])
-    return jsonify({"base": base, "target": target, "lag": lag, "correlation": round(corr, 4)})
+    return jsonify({
+        "base": base,
+        "target": target,
+        "lag": lag,
+        "correlation": round(corr, 4)
+    })
 
 @app.route("/coupling", methods=["GET"])
 def coupling():
@@ -134,7 +165,12 @@ def coupling():
     df2["Return"] = df2["Close"].pct_change()
     merged = pd.merge(df1[["Date", "Return"]], df2[["Date", "Return"]], on="Date", suffixes=("_base", "_target"))
     decoupled = (merged["Return_base"] * merged["Return_target"] < 0).mean()
-    return jsonify({"base": base, "target": target, "decoupled_rate": round(decoupled, 4), "days": len(merged)})
+    return jsonify({
+        "base": base,
+        "target": target,
+        "decoupled_rate": round(decoupled, 4),
+        "days": len(merged)
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
