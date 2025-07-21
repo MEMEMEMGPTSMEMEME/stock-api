@@ -10,6 +10,10 @@ DATA_SOURCES = {
     "momentum": "Momentum_stock_date"
 }
 
+@app.route("/", methods=["GET"])
+def health():
+    return "Stock API is running!", 200
+
 @app.route("/price", methods=["GET"])
 def get_price():
     symbol = request.args.get("symbol")
