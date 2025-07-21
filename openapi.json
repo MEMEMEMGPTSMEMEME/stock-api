@@ -1,0 +1,74 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Stock Pattern Analysis API",
+    "version": "1.0.0",
+    "description": "과거 주가 CSV 데이터를 기반으로 유사도, 추종률, 재현성 분석이 가능한 API입니다."
+  },
+  "servers": [
+    {
+      "url": "https://stock-api-n6ja.onrender.com"
+    }
+  ],
+  "paths": {
+    "/price": {
+      "get": {
+        "summary": "지정 종목의 가장 최근 OHLCV 데이터",
+        "parameters": [
+          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "interval", "in": "query", "schema": { "type": "string", "default": "daily" } },
+          { "name": "source", "in": "query", "schema": { "type": "string", "default": "market", "enum": ["market", "momentum"] } }
+        ],
+        "responses": {
+          "200": {
+            "description": "가장 최근의 일봉 또는 주봉 데이터 반환",
+            "content": {
+              "application/json": {
+                "example": {
+                  "symbol": "TSLA",
+                  "source": "market",
+                  "interval": "daily",
+                  "latest": {
+                    "Date": "2025-07-19",
+                    "Open": 255.0,
+                    "High": 257.8,
+                    "Low": 250.9,
+                    "Close": 252.3,
+                    "Volume": 14800000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/avg": {
+      "get": {
+        "summary": "최근 N일간 평균 종가",
+        "parameters": [
+          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "interval", "in": "query", "schema": { "type": "string", "default": "daily" } },
+          { "name": "days", "in": "query", "schema": { "type": "integer", "default": 5 } },
+          { "name": "source", "in": "query", "schema": { "type": "string", "default": "market", "enum": ["market", "momentum"] } }
+        ],
+        "responses": {
+          "200": {
+            "description": "N일 평균 종가",
+            "content": {
+              "application/json": {
+                "example": {
+                  "symbol": "BBLG",
+                  "source": "momentum",
+                  "interval": "daily",
+                  "days": 5,
+                  "average_close": 0.78
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
