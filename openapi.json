@@ -1,71 +1,133 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Stock Pattern Analysis API",
+    "title": "Stock Pattern API",
     "version": "1.0.0",
-    "description": "과거 주가 CSV 데이터를 기반으로 유사도, 추종률, 재현성 분석이 가능한 API입니다."
+    "description": "Provides historical OHLCV data and average close price from local CSV files for stock pattern analysis."
   },
   "servers": [
     {
-      "url": "https://stock-api-n6ja.onrender.com"
+      "url": "https://stock-api-n6ja.onrender.com",
+      "description": "Render hosted Flask server"
     }
   ],
   "paths": {
     "/price": {
       "get": {
-        "summary": "지정 종목의 가장 최근 OHLCV 데이터",
+        "operationId": "getLatestOHLCV",
+        "summary": "Get latest OHLCV data",
         "parameters": [
-          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "interval", "in": "query", "schema": { "type": "string", "default": "daily" } },
-          { "name": "source", "in": "query", "schema": { "type": "string", "default": "market", "enum": ["market", "momentum"] } }
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Stock symbol (e.g., TSLA)"
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["daily", "weekly", "monthly"]
+            },
+            "description": "Interval of data (default: daily)"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["market", "momentum"]
+            },
+            "description": "CSV folder to use (default: market)"
+          }
         ],
         "responses": {
           "200": {
-            "description": "가장 최근의 일봉 또는 주봉 데이터 반환",
+            "description": "Latest OHLCV row",
             "content": {
               "application/json": {
-                "example": {
-                  "symbol": "TSLA",
-                  "source": "market",
-                  "interval": "daily",
-                  "latest": {
-                    "Date": "2025-07-19",
-                    "Open": 255.0,
-                    "High": 257.8,
-                    "Low": 250.9,
-                    "Close": 252.3,
-                    "Volume": 14800000
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "symbol": { "type": "string" },
+                    "interval": { "type": "string" },
+                    "source": { "type": "string" },
+                    "latest": { "type": "object" }
                   }
                 }
               }
             }
+          },
+          "404": {
+            "description": "CSV file not found"
           }
         }
       }
     },
     "/avg": {
       "get": {
-        "summary": "최근 N일간 평균 종가",
+        "operationId": "getAverageClose",
+        "summary": "Get average close price over N days",
         "parameters": [
-          { "name": "symbol", "in": "query", "required": true, "schema": { "type": "string" } },
-          { "name": "interval", "in": "query", "schema": { "type": "string", "default": "daily" } },
-          { "name": "days", "in": "query", "schema": { "type": "integer", "default": 5 } },
-          { "name": "source", "in": "query", "schema": { "type": "string", "default": "market", "enum": ["market", "momentum"] } }
+          {
+            "name": "symbol",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Stock symbol (e.g., NVDA)"
+          },
+          {
+            "name": "interval",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["daily", "weekly", "monthly"]
+            },
+            "description": "Interval of data (default: daily)"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 5 },
+            "description": "Number of days to average (default: 5)"
+          },
+          {
+            "name": "source",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["market", "momentum"]
+            },
+            "description": "CSV folder to use (default: market)"
+          }
         ],
         "responses": {
           "200": {
-            "description": "N일 평균 종가",
+            "description": "Average close price",
             "content": {
               "application/json": {
-                "example": {
-                  "symbol": "BBLG",
-                  "source": "momentum",
-                  "interval": "daily",
-                  "days": 5,
-                  "average_close": 0.78
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "symbol": { "type": "string" },
+                    "interval": { "type": "string" },
+                    "days": { "type": "integer" },
+                    "source": { "type": "string" },
+                    "average_close": { "type": "number" }
+                  }
                 }
               }
             }
+          },
+          "404": {
+            "description": "CSV file not found"
           }
         }
       }
